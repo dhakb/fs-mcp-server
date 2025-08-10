@@ -7,18 +7,17 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 const server = new McpServer({
   name: "fs",
   version: "1.0.0",
-  capabilities: {
-    resources: {},
-    tools: {}
-  }
 });
 
 
-server.tool(
+server.registerTool(
   "list_files",
-  "List files and directories at a given path",
   {
-    path: z.string().describe("Path to directory to list content of it (defaults to current directory)")
+    title: "List Files",
+    description: "List files and directories at a given path",
+    inputSchema: {
+      path: z.string().optional().describe("Path to directory to list content of it (defaults to current directory)")
+    }
   },
   async ({path}) => {
     try {
@@ -53,11 +52,14 @@ server.tool(
   }
 );
 
-server.tool(
+server.registerTool(
   "read_file",
-  "Read the content of a file at a given path",
   {
-    path: z.string().describe("Path to file to read")
+    title: "Read File",
+    description: "Read the content of a file at a given path",
+    inputSchema: {
+      path: z.string().describe("Path to file to read")
+    }
   },
   async ({path}) => {
     try {
@@ -83,12 +85,15 @@ server.tool(
   }
 );
 
-server.tool(
+server.registerTool(
   "write_file",
-  "Write content to a file at a given path",
   {
-    path: z.string().describe("Path to file to write"),
-    content: z.string().describe("Content to write to the file")
+    title: "Write File",
+    description: "Write content to a file at a given path",
+    inputSchema: {
+      path: z.string().describe("Path to file to write"),
+      content: z.string().describe("Content to write to the file")
+    }
   },
   async ({path, content}) => {
     try {
