@@ -83,6 +83,37 @@ server.tool(
   }
 );
 
+server.tool(
+  "write_file",
+  "Write content to a file at a given path",
+  {
+    path: z.string().describe("Path to file to write"),
+    content: z.string().describe("Content to write to the file")
+  },
+  async ({path, content}) => {
+    try {
+      await fs.writeFile(path, content, "utf-8");
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Successfully wrote to file: ${path}`
+          }
+        ]
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error writing file: ${error instanceof Error ? error.message : String(error)}`
+          }
+        ]
+      };
+    }
+  }
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
