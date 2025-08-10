@@ -53,6 +53,36 @@ server.tool(
   }
 );
 
+server.tool(
+  "read_file",
+  "Read the content of a file at a given path",
+  {
+    path: z.string().describe("Path to file to read")
+  },
+  async ({path}) => {
+    try {
+      const content = await fs.readFile(path, "utf-8");
+      return {
+        content: [
+          {
+            type: "text",
+            text: content
+          }
+        ]
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error reading file: ${error instanceof Error ? error.message : String(error)}`
+          }
+        ]
+      };
+    }
+  }
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
